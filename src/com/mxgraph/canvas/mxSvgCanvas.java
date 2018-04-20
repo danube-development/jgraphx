@@ -12,6 +12,8 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,6 +32,8 @@ import com.mxgraph.view.mxCellState;
  */
 public class mxSvgCanvas extends mxBasicCanvas
 {
+
+	private static final Logger log = Logger.getLogger(mxSvgCanvas.class.getName());
 
 	/**
 	 * Holds the HTML document that represents the canvas.
@@ -360,7 +364,7 @@ public class mxSvgCanvas extends mxBasicCanvas
 				}
 				catch (IOException e)
 				{
-					// ignore
+					log.log(Level.SEVERE, "Failed to create image data URL", e);
 				}
 			}
 
@@ -498,7 +502,7 @@ public class mxSvgCanvas extends mxBasicCanvas
 			List<mxPoint> pts = state.getAbsolutePoints();
 
 			// Transpose all points by cloning into a new array
-			pts = mxUtils.translatePoints(pts, translate.x, translate.y);
+			pts = mxUtils.translatePoints(pts, translate.getX(), translate.getY());
 
 			// Draws the line
 			elem = drawLine(pts, style);
@@ -506,18 +510,23 @@ public class mxSvgCanvas extends mxBasicCanvas
 			// Applies opacity
 			float opacity = mxUtils.getFloat(style, mxConstants.STYLE_OPACITY,
 					100);
+			float fillOpacity = mxUtils.getFloat(style, mxConstants.STYLE_FILL_OPACITY,
+					100);
+			float strokeOpacity = mxUtils.getFloat(style, mxConstants.STYLE_STROKE_OPACITY,
+					100);
 
-			if (opacity != 100)
+			if (opacity != 100 || fillOpacity != 100 || strokeOpacity != 100)
 			{
-				String value = String.valueOf(opacity / 100);
-				elem.setAttribute("fill-opacity", value);
-				elem.setAttribute("stroke-opacity", value);
+				String fillOpac = String.valueOf(opacity * fillOpacity / 10000 );
+				String strokeOpac = String.valueOf(opacity * strokeOpacity / 10000);
+				elem.setAttribute("fill-opacity", fillOpac);
+				elem.setAttribute("stroke-opacity", strokeOpac);
 			}
 		}
 		else
 		{
-			int x = (int) state.getX() + translate.x;
-			int y = (int) state.getY() + translate.y;
+			int x = (int) (state.getX() + translate.getX());
+			int y = (int) (state.getY() + translate.getY());
 			int w = (int) state.getWidth();
 			int h = (int) state.getHeight();
 
@@ -565,8 +574,8 @@ public class mxSvgCanvas extends mxBasicCanvas
 
 		if (drawLabels && bounds != null)
 		{
-			int x = (int) bounds.getX() + translate.x;
-			int y = (int) bounds.getY() + translate.y;
+			int x = (int) (bounds.getX() + translate.getX());
+			int y = (int) (bounds.getY() + translate.getY());
 			int w = (int) bounds.getWidth();
 			int h = (int) bounds.getHeight();
 			Map<String, Object> style = state.getStyle();
@@ -598,6 +607,8 @@ public class mxSvgCanvas extends mxBasicCanvas
 		float strokeWidth = (float) (mxUtils.getFloat(style,
 				mxConstants.STYLE_STROKEWIDTH, 1) * scale);
 		float opacity = mxUtils.getFloat(style, mxConstants.STYLE_OPACITY, 100);
+		float fillOpacity = mxUtils.getFloat(style, mxConstants.STYLE_FILL_OPACITY, 100);
+		float strokeOpacity = mxUtils.getFloat(style, mxConstants.STYLE_STROKE_OPACITY, 100);
 
 		// Draws the shape
 		String shape = mxUtils.getString(style, mxConstants.STYLE_SHAPE, "");
@@ -901,9 +912,9 @@ public class mxSvgCanvas extends mxBasicCanvas
 							imageBounds.getWidth(), imageBounds.getHeight(),
 							img, false, false, false, isEmbedded());
 
-					if (opacity != 100)
+					if (opacity != 100 || fillOpacity != 100)
 					{
-						String value = String.valueOf(opacity / 100);
+						String value = String.valueOf(opacity * fillOpacity / 10000);
 						imageElement.setAttribute("opacity", value);
 					}
 
@@ -1018,11 +1029,12 @@ public class mxSvgCanvas extends mxBasicCanvas
 
 		}
 
-		if (opacity != 100)
+		if (opacity != 100 || fillOpacity != 100 || strokeOpacity != 100)
 		{
-			String value = String.valueOf(opacity / 100);
-			elem.setAttribute("fill-opacity", value);
-			elem.setAttribute("stroke-opacity", value);
+			String fillValue = String.valueOf(opacity * fillOpacity / 10000);
+			String strokeValue = String.valueOf(opacity * strokeOpacity / 10000);
+			elem.setAttribute("fill-opacity", fillValue);
+			elem.setAttribute("stroke-opacity", strokeValue);
 		}
 
 		if (mxUtils.isTrue(style, mxConstants.STYLE_DASHED))

@@ -136,7 +136,10 @@ public class mxSaxOutputHandler extends DefaultHandler
 		{
 			public void parseElement(Attributes atts)
 			{
-				canvas.setDashed(atts.getValue("dashed").equals("1"));
+				String temp = atts.getValue("fixDash");
+				boolean fixDash = temp != null && temp.equals("1");
+				
+				canvas.setDashed(atts.getValue("dashed").equals("1"), fixDash);
 			}
 		});
 
@@ -225,6 +228,22 @@ public class mxSaxOutputHandler extends DefaultHandler
 			public void parseElement(Attributes atts)
 			{
 				canvas.setAlpha(Double.parseDouble(atts.getValue("alpha")));
+			}
+		});
+
+		handlers.put("fillalpha", new IElementHandler()
+		{
+			public void parseElement(Attributes atts)
+			{
+				canvas.setFillAlpha(Double.parseDouble(atts.getValue("alpha")));
+			}
+		});
+		
+		handlers.put("strokealpha", new IElementHandler()
+		{
+			public void parseElement(Attributes atts)
+			{
+				canvas.setStrokeAlpha(Double.parseDouble(atts.getValue("alpha")));
 			}
 		});
 

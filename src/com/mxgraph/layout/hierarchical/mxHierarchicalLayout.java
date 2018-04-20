@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.SwingConstants;
 
@@ -93,13 +91,6 @@ JGraphLayout.Stoppable*/
 	protected boolean fineTuning = true;
 
 	/**
-	 * Whether or not to promote edges that terminate on vertices with
-	 * different but common ancestry to appear connected to the highest
-	 * siblings in the ancestry chains
-	 */
-	protected boolean promoteEdges = true;
-
-	/**
 	 * Whether or not to navigate edges whose terminal vertices 
 	 * have different parents but are in the same ancestry chain
 	 */
@@ -114,9 +105,6 @@ JGraphLayout.Stoppable*/
 	 * The layout progress bar
 	 */
 	//protected JGraphLayoutProgress progress = new JGraphLayoutProgress();
-	/** The logger for this class */
-	private static Logger logger = Logger
-			.getLogger("com.jgraph.layout.hierarchical.JGraphHierarchicalLayout");
 
 	/**
 	 * Constructs a hierarchical layout
@@ -708,22 +696,6 @@ JGraphLayout.Stoppable*/
 	public void setDisableEdgeStyle(boolean disableEdgeStyle)
 	{
 		this.disableEdgeStyle = disableEdgeStyle;
-	}
-
-	/**
-	 * Sets the logging level of this class
-	 * @param level the logging level to set
-	 */
-	public void setLoggerLevel(Level level)
-	{
-		try
-		{
-			logger.setLevel(level);
-		}
-		catch (SecurityException e)
-		{
-			// Probably running in an applet
-		}
 	}
 
 	/**

@@ -79,6 +79,13 @@ public interface mxICanvas2D
 	void setDashed(boolean value);
 
 	/**
+	 * Sets the dashed state. This should default to false if unset.
+	 * 
+	 * @param value Boolean representing the dashed state.
+	 */
+	void setDashed(boolean value, boolean fixDash);
+
+	/**
 	 * Sets the dash pattern. This should default to "3 3" if unset.
 	 * 
 	 * @param value Space separated list of floats representing the dash
@@ -156,6 +163,22 @@ public interface mxICanvas2D
 	 * @param value
 	 */
 	void setAlpha(double value);
+
+	/**
+	 * Default value 1. This method may add rendering overhead and should be
+	 * used with care.
+	 * 
+	 * @param value
+	 */
+	void setFillAlpha(double value);
+	
+	/**
+	 * Default value 1. This method may add rendering overhead and should be
+	 * used with care.
+	 * 
+	 * @param value
+	 */
+	void setStrokeAlpha(double value);
 
 	/**
 	 * Default value {@link mxConstants#NONE}.
